@@ -13,9 +13,9 @@ s/^[[:space:]]*RUN[[:space:]]\+//i;
 
 # COPY behaves differently on files and directories
 # with a "--from" argument
-s/^[[:space:]]*COPY\([[:space:]]\+--from=[^[:space:]]\+\)\(\([[:space:]]\+[^[:space:]]\+\)\+\)\([[:space:]]\+[^[:space:]]\+\)[[:space:]]*/for i in\2; do\n\ttest -d "$i" \&\& i="$i\/"\n\trsync -a "$i" \4 #\1\ndone/i
+s/^[[:space:]]*COPY\([[:space:]]\+--from=[^[:space:]]\+\)\(\([[:space:]]\+[^[:space:]]\+\)\+\)\([[:space:]]\+[^[:space:]]\+\)[[:space:]]*/for i in\2; do\n\ttest -d "$i" \&\& i="$i\/"\n\trsync -a "$i"\4 #\1\ndone/i
 # without "--from" argument
-s/^[[:space:]]*COPY\(\([[:space:]]\+[^[:space:]]\+\)\+\)\([[:space:]]\+[^[:space:]]\+\)[[:space:]]*/for i in\1; do\n\ttest -d "$i" \&\& i="$i\/"\n\trsync -a "$i" \3\ndone/i
+s/^[[:space:]]*COPY\(\([[:space:]]\+[^[:space:]]\+\)\+\)\([[:space:]]\+[^[:space:]]\+\)[[:space:]]*/for i in\1; do\n\ttest -d "$i" \&\& i="$i\/"\n\trsync -a "$i"\3\ndone/i
 
 # imitate WORKDIR behavior
 s/^[[:space:]]*WORKDIR[[:space:]]\+\(.\+\)/mkdir \1 \&\& cd \1/i
