@@ -18,4 +18,4 @@ s/^[[:space:]]*COPY\([[:space:]]\+--from=[^[:space:]]\+\)\(\([[:space:]]\+[^[:sp
 s/^[[:space:]]*COPY\(\([[:space:]]\+[^[:space:]]\+\)\+\)\([[:space:]]\+[^[:space:]]\+\)[[:space:]]*/for i in\1; do\n\ttest -d "$i" \&\& i="$i\/"\n\trsync -a "$i"\3\ndone/i
 
 # imitate WORKDIR behavior
-s/^[[:space:]]*WORKDIR[[:space:]]\+\(.\+\)/mkdir \1 \&\& cd \1/i
+s/^[[:space:]]*WORKDIR[[:space:]]\+\(.\+\)/mkdir -p \1 \&\& cd \1/i
