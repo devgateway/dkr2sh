@@ -4,7 +4,7 @@ This script naively translates some Dockerfile instructions into corresponding s
 
 ## Conversion Rules
 
-### Commands commented out
+### Instructions commented out
 
 * FROM
 * CMD
@@ -18,7 +18,7 @@ This script naively translates some Dockerfile instructions into corresponding s
 * STOPSIGNAL
 * HEALTHCHECK
 
-Translate these commands manually:
+Translate these instructions manually:
 
 * USER - execute the next block(s) with `su` or equivalent
 * SHELL - unwrap JSON-formatted arguments, run it for subsequent block(s)
