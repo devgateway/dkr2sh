@@ -2,6 +2,34 @@
 
 This script naively translates some Dockerfile instructions into corresponding shell commands.
 
+## Usage
+
+The file to use is `dkr2sh.sed`, which is a sed script, note how it starts:
+```
+#!/bin/sed -f
+# Convert Dockerfile to shell script.
+```
+
+To use it, normal sed usage implies it takes stdin and outputs stdout. So:
+```
+./dkr2sh.sed < Dockerfile > mydockerscript.sh
+```
+
+## Contributing
+The explanation of the tranform rules below matches with .sh files, eg. `copy-from.sh`, `copy.sh` and `add.sh`
+
+In the `dkr2sh.sed` file, the transform rules have been translated to sed patterns. The `sh2sed.sh` is the helper script that can do this as part of manual labour. You can change any of the patterns and run, eg. `./sh2sed.sh < copy-from.sh` and you will get this:
+```
+for i in ARGS; do\n\ttest -d "$i" \&\& i="$i\/"\n\trsync -a "$i" DEST # FROM\ndone
+```
+
+It matches the replacement string in the `dkr2sh.sed` file, here, but with match groups inserted inplace of ARGS, DEST, FROM
+```
+s/^[[:space:]]*COPY\([[:space:]]\+--from=[^[:space:]]\+\)\(\([[:space:]]\+[^[:space:]]\+\)\+\)\([[:space:]]\+[^[:space:]]\+\)[[:space:]]*/for i in\2; do\n\ttest -d "$i" \&\& i="$i\/"\n\trsync -a "$i"\4 #\1\ndone/i
+```
+
+Each match group and result has to be implemented manually.
+
 ## Conversion Rules
 
 ### Instructions commented out
