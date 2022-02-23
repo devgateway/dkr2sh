@@ -41,7 +41,6 @@ Each match group and result has to be implemented manually.
 * EXPOSE
 * ENTRYPOINT
 * VOLUME
-* ARG
 * ONBUILD
 * STOPSIGNAL
 * HEALTHCHECK
@@ -51,15 +50,25 @@ Translate these instructions manually:
 * USER - execute the next block(s) with `su` or equivalent
 * SHELL - unwrap JSON-formatted arguments, run it for subsequent block(s)
 
+Additionally, any pure comment lines (starting with `#`) are removed during conversion in order to support multi-line RUN statements with embedded comments, which is standard Dockerfile practise.
+
 ### ENV
 
 Before:
 
     ENV FOO bar
+    ENV FOO=bar
+    ENV FOO
 
 After:
 
     export FOO=bar
+    export FOO=bar
+    # (no value assigned) ENV FOO
+
+### ARG
+
+Same as ENV
 
 ### RUN
 
@@ -138,6 +147,8 @@ After:
 ## Copyright
 
 Copyright 2018, Development Gateway
+
+Copyright 2022, Dennis Schneidermann - modifications stated in source
 
 This program is free software: you can redistribute it and/or modify it under the terms of
 the GNU General Public License as published by the Free Software Foundation, either version 3 of

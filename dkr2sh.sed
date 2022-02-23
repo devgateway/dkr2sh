@@ -1,12 +1,22 @@
 #!/bin/sed -f
 # Convert Dockerfile to shell script.
 # Copyright 2018, Development Gateway, GPLv3+
+# Copyright 2022, Dennis Schneidermann, GPLv3+ - modifications noted by "dss"
+
+# remove pure comment lines to support multi-line RUN statements - added by dss 20220223
+/^[[:space:]]*#.*/d;
 
 # comment out other instructions
-/^[[:space:]]*\<\(FROM\|CMD\|LABEL\|MAINTAINER\|EXPOSE\|ENTRYPOINT\|VOLUME\|USER\|ARG\|ONBUILD\|STOPSIGNAL\|HEALTHCHECK\|SHELL\)\>/I s/^[[:space:]]*/# /;
+/^[[:space:]]*\<\(FROM\|CMD\|LABEL\|MAINTAINER\|EXPOSE\|ENTRYPOINT\|VOLUME\|USER\|ONBUILD\|STOPSIGNAL\|HEALTHCHECK\|SHELL\)\>/I s/^[[:space:]]*/# /;
 
-# ENV instructions become export commands
-s/^[[:space:]]*ENV[[:space:]]\+\([^[:space:]]\+\)[[:space:]]\+\(.\+\)/export \1='\2'/i;
+# ENV and ARG instructions become export commands - modified to support ARG by dss 20220223
+s/^[[:space:]]*\(ENV\|ARG\)[[:space:]]\+\([^[:space:]]\+\)[[:space:]]\+\(.\+\)/export \2=\3/i;
+
+# ENV and ARG instructions become export commands (alternate) - added by dss 20220223
+s/^[[:space:]]*\(ENV\|ARG\)[[:space:]]\+\([^[:space:]]\+\)=\(.\+\)/export \2=\3/i;
+
+# comment out any unparsable ENV or ARG instructions - added by dss 20220223
+/^[[:space:]]*\<\(ENV\|ARG\)\>/I s/^[[:space:]]*/# (no value assigned) /;
 
 # RUN get executed literally, including line wraps
 s/^[[:space:]]*RUN[[:space:]]\+//i;
